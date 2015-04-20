@@ -1,0 +1,34 @@
+{% extends 'layout-main.html' %}
+{% block content %}
+  <form method="post" class="form">
+    {{ form.hidden_tag() }}
+    <h3 class="form-heading">Traditional Symmetric Key Ciphers </h3>
+
+    <div class="form-group">
+        <label for="text">Enter Text</label><br>
+        {{ form.text() }}
+    </div>
+    <div class="form-group">
+        <label for="alg">Select Algorithm</label><br>
+        {{ form.algorithm() }}
+    </div>
+    <div class="form-group">
+        <label for="meth">Use Method</label><br>
+        {{ form.switch() }}
+    </div>
+    <div class="form-group">
+        <label for="key1">Enter Key(s)</label><br>
+        {{ form.key1() }}
+        <label for="key2">+ key2</label>
+        {{ form.key2() }}
+    </div>
+    
+    <input type="submit" value="Et tu, Brute?">
+  </form>
+
+  <br>
+  <div class="form-group">
+        <label for="meth">Text : </label>
+         {{ l_txt }}
+    </div>
+{% endblock %}
