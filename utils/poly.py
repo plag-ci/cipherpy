@@ -10,16 +10,23 @@ class Playfair(Cipher):
 		if a == b: b = 'X'
 		arow,acol = self.key.index(a)/5 , self.key.index(a)%5
 		brow,bcol = self.key.index(b)/5 , self.key.index(b)%5
-		if arow == brow: return (self.key[arow*5+(acol+1)%5] + self.key[brow*5+(bcol+1)%5])
-		elif acol == bcol: return (self.key[((arow+1)%5)*5+acol] + self.key[((brow+1)%5)*5+bcol])
-		else: return (self.key[arow*5 + bcol] + self.key[brow*5 + acol])
+		if arow == brow:
+			return (self.key[arow*5+(acol+1)%5] + self.key[brow*5+(bcol+1)%5])
+		elif acol == bcol:
+			return (self.key[((arow+1)%5)*5+acol] + self.key[((brow+1)%5)*5+bcol])
+		else:
+			return (self.key[arow*5 + bcol] + self.key[brow*5 + acol])
 
 	def decipher_pair(self,a,b):
+		assert a != b, 'two of the same letters occured together, illegal in playfair'
 		arow,acol = self.key.index(a)/5 , self.key.index(a)%5
 		brow,bcol = self.key.index(b)/5 , self.key.index(b)%5
-		if arow == brow: return (self.key[arow*5+(acol-1)%5] + self.key[brow*5+(bcol-1)%5])
-		elif acol == bcol: return (self.key[((arow-1)%5)*5+acol] + self.key[((brow-1)%5)*5+bcol])
-		else: return self.key[arow*5 + bcol] + self.key[brow*5 + acol]
+		if arow == brow:
+			return (self.key[arow*5+(acol-1)%5] + self.key[brow*5+(bcol-1)%5])
+		elif acol == bcol:
+			return (self.key[((arow-1)%5)*5+acol] + self.key[((brow-1)%5)*5+bcol])
+		else:
+			return self.key[arow*5 + bcol] + self.key[brow*5 + acol]
 
 	def encipher(self,string):   
 		string = re.sub(r'[J]','I',string)
