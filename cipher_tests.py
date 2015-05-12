@@ -12,7 +12,7 @@ class CeasarTestCase(unittest.TestCase):
 
 	def test_decipher(self):
 		text = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-		declist = ['xyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvw',
+		declist = ['1111xyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvw',
 					'vwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu',
 					'stuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr',
 					'pqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmno',
