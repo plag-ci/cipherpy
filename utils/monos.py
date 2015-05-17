@@ -112,3 +112,51 @@ class Substitution(Cipher):
             if c.isalpha(): ret += self.invkey[self.conv2i(c)]
             else: ret += c
         return ret
+
+class Hill(Cipher):
+    def __init__(self, key):
+        self.key = key
+    def encipher(self, message, encryption=True):
+        matrix = self.key
+        message = message.upper()
+        if not invertible(matrix):
+            return "Non invertible matrix"
+        if len(message) % 2 != 0:
+            message = message + 'X'
+        couple = [list(message[i*2:(i*2)+2]) for i in range(0, len(message)/2)]
+        result = [i[:] for i in couple]
+        if not encryption:
+            matrix = inverse_matrix(matrix)
+        for i, c in enumerate(couple):
+            if c[0].isalpha() and c[1].isalpha():
+                result[i][0] = chr(((ord(c[0])-65) * matrix[0][0] + \
+                                        (ord(c[1])-65) * matrix[0][1]) % 26 + 65)
+                result[i][1] = chr(((ord(c[0])-65) * matrix[1][0] + \
+                                        (ord(c[1])-65) * matrix[1][1]) % 26 + 65)
+        return "".join(["".join(i) for i in result])
+
+    def decipher(self, cypher, matrix):
+        return self.encipher(cypher, matrix, False)
+
+
+def gcd_v1(x,y):
+    assert x or y, "both arguments equals to zero " + `x, y`
+    while y:
+        (x, y) = (y, x%y)
+    return abs(x)
+
+def invertible(matrix):
+    determinant = matrix[0][0] * matrix[1][1] - \
+                    matrix[1][0] * matrix[0][1]
+    return gcd_v1(determinant, 26) == 1
+
+def inverse_matrix(matrix):
+    if not invertible(matrix):
+        return "Non invertible matrix"
+    result = [i[:] for i in matrix]
+    result[0][0] = matrix[1][1]
+    result[1][1] = matrix[0][0]
+    result[1][0] = (-matrix[1][0]) % 26
+    result[0][1] = (-matrix[0][1]) % 26
+    
+    return result
