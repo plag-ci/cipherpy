@@ -29,6 +29,20 @@ $(document).ready(function(){
         
     });
 
+	$("#algorithms select").change(function(){
+		var v = $(this).val();
+		c(v);
+	    if(v == 1){
+	    	$("#key-2, #key-1").removeClass("hide");
+	    }
+	    else if(v == 8){
+	    	$("#key-1, #key-2").addClass("hide");
+	    }
+	    else{
+	    	$("#key-2").addClass("hide");
+	    	$("#key-1").removeClass("hide");
+	    }
+	});
 
 	function c (a) {
 		console.log(a);

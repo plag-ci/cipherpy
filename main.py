@@ -34,6 +34,7 @@ def home():
 		5 : substitution, #key (string)
 		6 : additive, #key (string)
 		7 : multiplicative, #key (string)
+		8 : hill,
 	}
 
 	form = CipherForm(csrf_enabled=True)
@@ -41,8 +42,9 @@ def home():
 	if form.is_submitted():
 		text = ''
 		if request.files['file']:
-			for line in request.files['file'].readlines():
-				text += line
+			text = Cipher().remove_punctuation(request.files['file'].read())
+			# for line in request.files['file'].readlines():
+			# 	text += line
 		else:		
 			text = form.text.data
 
@@ -105,6 +107,12 @@ def affine(k1,k2,t,s):
 	if s: ct = c.encipher(t)
 	else: ct = c.decipher(t)
 	return ct
+
+def hill(k1,k2,t,s):
+	c = Hill([[11, 3], [8, 7]])
+	if s: ct = c.encipher(t)
+	else: ct = c.decipher(t)
+	return ct	
 
 if __name__ == "__main__":
 	app.run()
