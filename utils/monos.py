@@ -135,8 +135,9 @@ class Hill(Cipher):
                                         (ord(c[1])-65) * matrix[1][1]) % 26 + 65)
         return "".join(["".join(i) for i in result])
 
-    def decipher(self, cypher, matrix):
-        return self.encipher(cypher, matrix, False)
+    def decipher(self, cypher):
+        matrix = self.key
+        return self.encipher(cypher, False)
 
 
 def gcd_v1(x,y):
