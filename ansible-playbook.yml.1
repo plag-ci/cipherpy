@@ -36,7 +36,7 @@
     - name: start app
       action: supervisorctl name=${app_name} state=started
 
-  handlers:
+    handlers:
     - name: restart app
       action: supervisorctl name=${app_name} state=restarted
 
