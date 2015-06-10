@@ -1,0 +1,24 @@
+---
+- hosts: ansi-deploy
+  user: root
+  sudo: True
+
+  vars:
+    app_name: app
+    repo_url: https://github.com/pekermert/cipherpy.git
+    repo_remote: origin
+    repo_version: master
+    webapps_dir: /srv/webapps
+    wsgi_file: app.py
+    wsgi_callable: app
+
+  tasks:
+    - name: log check
+      action: file dest={{webapps_dir}}/{{app_name}}/log state=directory
+
+    - name: deploy code from repo
+      action: git repo={{repo_url}} dest={{webapps_dir}}/{{app_name}}/src remote={{repo_remote}} version={{repo_version}}
+
+  handlers:
+    - name: restart app
+      supervisorctl: name={{app_name}} state=restarted
