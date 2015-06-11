@@ -6,8 +6,6 @@ from utils.monos import *
 from utils.poly import *
 
 
-#### MONO TEST CASES ####
-
 class CeasarTestCase(unittest.TestCase):
 
 	def test_decipher(self):
