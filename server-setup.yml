@@ -7,7 +7,7 @@
     app_name: plag_v
     repo_url: https://github.com/pekermert/cipherpy.git
     repo_remote: origin
-    repo_version: master
+    repo_version: develop
     webapps_dir: /root/app
     wsgi_file: app.py
     wsgi_callable: app
