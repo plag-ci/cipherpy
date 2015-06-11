@@ -46,16 +46,16 @@
       action: file path=/etc/nginx/sites-enabled/default state=absent
 
     - name: write nginx.conf
-      template: src={{webapps_dir}}/{{app_name}}/src/conf/nginx.conf dest=/etc/nginx/nginx.conf mode=0755
+      action: template src=conf/nginx.conf dest=/etc/nginx/nginx.conf mode=0755
 
     - name: create supervisord config folder
       action: file dest=/etc/supervisor state=directory owner=root
 
     - name: create supervisord config
-      template: src={{webapps_dir}}/{{app_name}}/src/conf/supervisord.conf dest=/etc/supervisord.conf mode=0755
+      action: template src=conf/supervisord.conf dest=/etc/supervisord.conf mode=0755
 
     - name: create supervisord init script
-      template: src={{webapps_dir}}/{{app_name}}/src/conf/supervisord.sh dest=/etc/init.d/supervisord mode=0755
+      action: template src=conf/supervisord.sh dest=/etc/init.d/supervisord mode=0755
 
     - name: start supervisord service and have it run during system startup
       action: service name=supervisord state=started enabled=yes
