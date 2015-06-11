@@ -23,10 +23,10 @@
       action: pip requirements=${webapps_dir}/${app_name}/src/requirements.txt virtualenv=${webapps_dir}/${app_name}/venv state=present
 
     - name: create supervisor conf
-      action: template src=templates/supervisor.ini dest=/etc/supervisor/${app_name}.ini
+      action: template src=${webapps_dir}/${app_name}/src/conf/supervisor.ini dest=/etc/supervisor/${app_name}.ini
 
     - name: create nginx site config
-      action: template src=templates/nginx_site.conf dest=/etc/nginx/sites-available/${app_name}.conf
+      action: template src=${webapps_dir}/${app_name}/src/conf/nginx_site.conf dest=/etc/nginx/sites-available/${app_name}.conf
       notify:
         - restart app
 
