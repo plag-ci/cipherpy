@@ -9,7 +9,7 @@
     repo_remote: origin
     repo_version: develop
     webapps_dir: /root/app
-    wsgi_file: app.py
+    wsgi_file: wsgi.py
     wsgi_callable: app
 
   tasks:
@@ -24,8 +24,7 @@
         - git-core
         - nginx
 
-    - name: install pip
-      action: easy_install name=pip
+    - easy_install: name=pip state=latest
 
     - name: install various libraries with pip
       action: pip name={{item}} state=latest
@@ -40,7 +39,7 @@
       action: git repo={{repo_url}} dest={{webapps_dir}}/{{app_name}}/src remote={{repo_remote}} version={{repo_version}}
 
     - name: intall dependencies into venv
-      action: pip requirements={{webapps_dir}}/{{app_name}}/src/app/requirements.txt virtualenv={{webapps_dir}}/{{app_name}}/venv state=latest
+      action: pip requirements={{webapps_dir}}/{{app_name}}/src/app/requirements.txt virtualenv={{webapps_dir}}/{{app_name}}/venv state=present
 
     - name: remove default nginx site
       action: file path=/etc/nginx/sites-enabled/default state=absent
