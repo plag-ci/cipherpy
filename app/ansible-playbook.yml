@@ -1,0 +1,44 @@
+---
+- hosts: ansi-deploy
+  user: root
+  sudo: True
+
+  vars:
+    app_name: app
+    repo_url: https://github.com/pekermert/cipherpy.git
+    repo_remote: origin
+    repo_version: master
+    webapps_dir: /srv/webapps
+    wsgi_file: app.py
+    wsgi_callable: app
+
+  tasks:
+    - name: log check
+      action: file dest=${webapps_dir}/${app_name}/log state=directory
+
+    - name: deploy code from repo
+      action: git repo=${repo_url} dest=${webapps_dir}/${app_name}/src remote=${repo_remote} version=${repo_version}
+
+    - name: intall dependencies into venv
+      action: pip requirements=${webapps_dir}/${app_name}/src/requirements.txt virtualenv=${webapps_dir}/${app_name}/venv state=present
+
+    - name: create supervisor conf
+      action: template src=${webapps_dir}/${app_name}/src/conf/supervisor.ini dest=/etc/supervisor/${app_name}.ini
+
+    - name: create nginx site config
+      action: template src=${webapps_dir}/${app_name}/src/conf/nginx_site.conf dest=/etc/nginx/sites-available/${app_name}.conf
+      notify:
+        - restart app
+
+    - name: link nginx conf
+      action: file src=/etc/nginx/sites-available/${app_name}.conf dest=/etc/nginx/sites-enabled/${app_name}.conf state=link
+
+    - name: start app
+      action: supervisorctl name=${app_name} state=started
+
+  handlers:
+    - name: restart app
+      action: supervisorctl name=${app_name} state=restarted
+
+    - name: restart nginx
+      action: service name=nginx state=restarted

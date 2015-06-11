@@ -1,0 +1,74 @@
+{% extends 'layout-main.html' %}
+{% block content %}
+  <form method="post" class="form" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <h3 class="form-heading">Traditional Symmetric Key Ciphers </h3>
+
+    <div class="select-input">
+        <button class="btn btn-default">File</button>
+        <button class="btn btn-default">Text Field</button>
+    </div>
+
+    <div class="row file-area hide">
+        <div class="col-lg-6 col-sm-6 col-12">
+            <h4>File text upload</h4>
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <span class="btn btn-primary btn-file">
+                        Browse… <input type="file" name="file">
+                    </span>
+                </span>
+                <input type="text" class="form-control" readonly="">
+            </div>
+        </div>
+    </div>
+
+    <div class="text-area hide">
+        <div class="form-group">
+            <label for="text">Enter Text</label><br>
+            {{ form.text() }}
+        </div>
+    </div>
+    <div class="form-group" id="algorithms">
+        <label for="alg">Select Algorithm</label><br>
+        {{ form.algorithm() }}
+    </div>
+    <div class="form-group">
+        <label for="meth">Use Method</label><br>
+        {{ form.switch() }}
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-3" id="key-1">
+                <label for="key1">Enter Key</label><br>
+                {{ form.key1() }}
+            </div>
+            <div class="col-lg-3 hide" id="key-2">
+                <label for="key2">key2(optinal)</label>
+                {{ form.key2() }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <button class="btn btn-default">Encrypt</button>
+        </div>
+    </div>
+  </form>
+
+  <br>
+  {% if l_txt %}
+  <div class="form-group">
+        <label for="meth">Cipher Text : </label>
+         <p style="word-wrap: break-word;">{{ l_txt }}</p>
+         <div>
+             <form method="post" action="/download-file" enctype="multipart/form-data">
+                 <textarea name="the_file" class="hide">
+                     {{ l_txt }}
+                 </textarea>
+                <button class="btn btn-default">Write to file</button>
+             </form>
+         </div>
+    </div>
+  {% endif %}
+{% endblock %}
