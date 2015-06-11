@@ -36,8 +36,11 @@
     - name: log check
       action: file dest={{webapps_dir}}/{{app_name}}/log state=directory
 
+	# create a directory if it doesn't exist
+	- file: path={{webapps_dir}}/{{app_name}} state=touch mode=0755
+
     - name: deploy code from repo
-      action: git repo={{repo_url}} dest={{webapps_dir}}/{{app_name}}/src remote={{repo_remote}} version={{repo_version}}
+      action: git repo={{repo_url}} dest={{webapps_dir}}/{{app_name}}/src remote={{repo_remote}} version={{repo_version}} owner=root group=root mode=0644
 
     - name: intall dependencies into venv
       action: pip requirements={{webapps_dir}}/{{app_name}}/src/app/requirements.txt virtualenv={{webapps_dir}}/{{app_name}}/venv state=latest
