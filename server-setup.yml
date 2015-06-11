@@ -13,6 +13,26 @@
     wsgi_callable: app
 
   tasks:
+    - name: add nginx ppa
+      action: apt_repository repo=ppa:nginx/stable state=present
+
+    - name: install common packages needed for python application development
+      action: apt pkg={{item}} state=installed
+      with_items:
+        - python-dev
+        - python-setuptools
+        - git-core
+        - nginx
+
+    - name: install pip
+      action: easy_install name=pip
+
+    - name: install various libraries with pip
+      action: pip name={{item}} state=present
+      with_items:
+        - virtualenv
+        - supervisor
+
     - name: log check
       action: file dest={{webapps_dir}}/{{app_name}}/log state=directory
 
@@ -20,13 +40,13 @@
       action: git repo={{repo_url}} dest={{webapps_dir}}/{{app_name}}/src remote={{repo_remote}} version={{repo_version}}
 
     - name: intall dependencies into venv
-      action: pip requirements={{webapps_dir}}/{{app_name}}/src/requirements.txt virtualenv={{webapps_dir}}/{{app_name}}/venv state=present
+      action: pip requirements={{webapps_dir}}/{{app_name}}/src/app/requirements.txt virtualenv={{webapps_dir}}/{{app_name}}/venv state=present
 
     - name: create supervisor conf
-      action: template src=templates/supervisor.ini dest=/etc/supervisor/{{app_name}}.ini
+      action: template src={{webapps_dir}}/{{app_name}}/conf/supervisor.ini dest=/etc/supervisor/{{app_name}}.ini
 
     - name: create nginx site config
-      action: template src=templates/nginx_site.conf dest=/etc/nginx/sites-available/{{app_name}}.conf
+      action: template src={{webapps_dir}}/{{app_name}}/conf/nginx_site.conf dest=/etc/nginx/sites-available/{{app_name}}.conf
       notify:
         - restart app
 
