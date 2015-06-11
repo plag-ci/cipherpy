@@ -36,7 +36,7 @@
     - name: log check
       action: file dest={{webapps_dir}}/{{app_name}}/log state=directory
 
-	- name: create a directory if it doesn't exist
+	- name: direcs creat
 	  action: path={{webapps_dir}}/{{app_name}} state=touch mode=0755
 
     - name: deploy code from repo
