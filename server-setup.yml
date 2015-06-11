@@ -45,13 +45,23 @@
     - name: intall dependencies into venv
       action: pip requirements={{webapps_dir}}/{{app_name}}/src/app/requirements.txt virtualenv={{webapps_dir}}/{{app_name}}/venv state=latest
 
-    - name: create supervisor conf
-      action: template src={{webapps_dir}}/{{app_name}}/src/conf/supervisor.ini dest=/etc/supervisor/{{app_name}}.ini
+    - name: remove default nginx site
+      action: file path=/etc/nginx/sites-enabled/default state=absent
 
-    - name: create nginx site config
-      action: template src={{webapps_dir}}/{{app_name}}/src/conf/nginx_site.conf dest=/etc/nginx/sites-available/{{app_name}}.conf
-      notify:
-        - restart app
+    - name: write nginx.conf
+      action: template src={{webapps_dir}}/{{app_name}}/src/conf/nginx.conf dest=/etc/nginx/nginx.conf
+
+    - name: create supervisord config folder
+      action: file dest=/etc/supervisor state=directory owner=root
+
+    - name: create supervisord config
+      action: template src={{webapps_dir}}/{{app_name}}/src/conf/supervisord.conf dest=/etc/supervisord.conf
+
+    - name: create supervisord init script
+      action: template src={{webapps_dir}}/{{app_name}}/src/conf/supervisord.sh dest=/etc/init.d/supervisord mode=0755
+
+    - name: start supervisord service and have it run during system startup
+      action: service name=supervisord state=started enabled=yes
 
     - name: link nginx conf
       action: file src=/etc/nginx/sites-available/{{app_name}}.conf dest=/etc/nginx/sites-enabled/{{app_name}}.conf state=link
