@@ -46,7 +46,7 @@
       action: file path=/etc/nginx/sites-enabled/default state=absent
 
     - name: write nginx.conf
-      action: template src={{webapps_dir}}/{{app_name}}/src/conf/nginx.conf dest=/etc/nginx/nginx.conf
+      action: template src={{webapps_dir}}/{{app_name}}/src/conf/nginx.conf dest=/etc/nginx/nginx.conf mode=0755
 
     - name: create supervisord config folder
       action: file dest=/etc/supervisor state=directory owner=root
