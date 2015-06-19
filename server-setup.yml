@@ -1,0 +1,77 @@
+---
+- hosts: ansi-deploy
+  user: root
+  sudo: True
+
+  vars:
+    app_name: plag_v
+    repo_url: https://github.com/pekermert/cipherpy.git
+    repo_remote: origin
+    repo_version: develop
+    webapps_dir: /root/app
+    wsgi_file: wsgi.py
+    wsgi_callable: app
+
+  tasks:
+    - name: add nginx ppa
+      action: apt_repository repo=ppa:nginx/stable state=present
+
+    - name: install common packages needed for python application development
+      action: apt pkg={{item}} state=installed
+      with_items:
+        - python-dev
+        - python-setuptools
+        - git-core
+        - nginx
+
+    - name: install pip
+      action: easy_install name=pip
+
+    - name: install various libraries with pip
+      action: pip name={{item}} state=latest
+      with_items:
+        - virtualenv
+        - supervisor
+
+    - name: log check
+      action: file dest={{webapps_dir}}/{{app_name}}/log state=directory
+
+    - name: deploy code from repo
+      action: git repo={{repo_url}} dest={{webapps_dir}}/{{app_name}}/src remote={{repo_remote}} version={{repo_version}}
+
+    - name: intall dependencies into venv
+      action: pip requirements={{webapps_dir}}/{{app_name}}/src/app/requirements.txt virtualenv={{webapps_dir}}/{{app_name}}/venv state=present
+
+    - name: remove default nginx site
+      action: file path=/etc/nginx/sites-enabled/default state=absent
+
+    - name: write nginx.conf
+      command: cp {{webapps_dir}}/{{app_name}}/src/conf/nginx.conf /etc/nginx/nginx.conf
+
+    - name: create supervisord config folder
+      action: file dest=/etc/supervisor state=directory owner=root
+
+    - name: create supervisord config
+      command: cp {{webapps_dir}}/{{app_name}}/src/conf/supervisord.conf /etc/supervisord.conf
+
+    - name: create supervisord init script
+      command: cp {{webapps_dir}}/{{app_name}}/src/conf/supervisord.sh /etc/init.d/supervisord
+
+    - name: start supervisord service and have it run during system startup
+      action: service name=supervisord state=started enabled=yes
+
+    - name: link nginx conf
+      action: file src=/etc/nginx/sites-available/{{app_name}}.conf dest=/etc/nginx/sites-enabled/{{app_name}}.conf state=link
+
+    - name: start app
+      action: supervisorctl name={{app_name}} state=started
+
+  handlers:
+    - name: restart app
+      action: supervisorctl name={{app_name}} state=restarted
+
+    - name: restart nginx
+      action: service name=nginx state=restarted
+  handlers:
+    - name: restart app
+      supervisorctl: name={{app_name}} state=restarted

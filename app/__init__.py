@@ -1,6 +1,6 @@
 import os
 from werkzeug import secure_filename
-
+from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, render_template, request, redirect, url_for,make_response
 from forms import *
 from utils.monos import *
@@ -114,5 +114,4 @@ def hill(k1,k2,t,s):
 	else: ct = c.decipher(t)
 	return ct	
 
-if __name__ == "__main__":
-	app.run()
+app.wsgi_app = ProxyFix(app.wsgi_app)

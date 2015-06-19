@@ -1,12 +1,10 @@
 import os
-import main
+import __init__
 import unittest
 import tempfile
 from utils.monos import *
 from utils.poly import *
 
-
-#### MONO TEST CASES ####
 
 class CeasarTestCase(unittest.TestCase):
 
