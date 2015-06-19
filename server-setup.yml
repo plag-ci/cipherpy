@@ -24,7 +24,7 @@
         - git-core
         - nginx
 
-    - easy_install: name=pip state=latest
+    - easy_install: name=pip
 
     - name: install various libraries with pip
       action: pip name={{item}} state=latest
